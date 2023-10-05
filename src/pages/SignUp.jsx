@@ -3,6 +3,13 @@ import { AiOutlineMail, AiFillUnlock } from "react-icons/ai";
 import { BsFillPersonFill } from "react-icons/bs";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 
 const SignUp = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
@@ -25,13 +32,39 @@ const SignUp = () => {
     }));
   };
 
+  async function onSubmit(e) {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userData = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+      const user = userData.user;
+
+      const formDataWithoutPassword = {
+        ...formData,
+      };
+      delete formDataWithoutPassword.password;
+      formDataWithoutPassword.timestamp = serverTimestamp();
+
+      await setDoc(doc(db, "users", user.uid), formDataWithoutPassword);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <section>
       <h1 className="text-3xl text-center mt-6 font-bold">Register</h1>
       <div className="flex justify-center items-center px-6 py-12 max-w-6xl mx-auto">
         <div className="bg-gray-900  px-12 py-12 rounded-tr-3xl  rounded-bl-3xl rounded-tl-xl rounded-br-3xl">
-          <form>
-            <div className="relative mt-6">
+          <form onSubmit={onSubmit}>
+            <div className="relative mt-3">
               <BsFillPersonFill className="absolute top-[13px] right-3 text-xl" />
               <input
                 type="text"
@@ -104,6 +137,7 @@ const SignUp = () => {
             </button>
 
             {/* Register with google */}
+            {/* Register with Facebook */}
           </form>
         </div>
       </div>

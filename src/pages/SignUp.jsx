@@ -63,8 +63,8 @@ const SignUp = () => {
   return (
     <section>
       <h1 className="text-3xl text-center mt-6 font-bold">Register</h1>
-      <div className="flex justify-center items-center px-6 py-12 max-w-6xl mx-auto">
-        <div className="bg-gray-900  px-12 py-12 rounded-tr-3xl  rounded-bl-3xl rounded-tl-xl rounded-br-3xl">
+      <div className="flex justify-center items-center py-12 max-w-6xl mx-auto">
+        <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20 bg-gray-900 px-12 py-12 rounded-tr-3xl  rounded-bl-3xl rounded-tl-xl rounded-br-3xl">
           <form onSubmit={onSubmit}>
             <div className="relative mt-3">
               <BsFillPersonFill className="absolute top-[13px] right-3 text-xl" />
@@ -74,7 +74,7 @@ const SignUp = () => {
                 value={name}
                 onChange={onChange}
                 placeholder="Full name"
-                className="w-[400px] px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out mb-6"
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out mb-6"
               />
             </div>
             <div className="relative">
@@ -85,7 +85,7 @@ const SignUp = () => {
                 placeholder="Email"
                 onChange={onChange}
                 value={email}
-                className="w-[400px] px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out mb-6"
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out mb-6"
               />
             </div>
 
@@ -107,12 +107,19 @@ const SignUp = () => {
                 placeholder="Password"
                 onChange={onChange}
                 value={password}
-                className="w-[400px] px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out"
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out mb-6"
               />
             </div>
 
-            <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg mt-3">
-              <p className="mb-6 text-white">
+            <button
+              type="submit"
+              className="mt-3 mb-6 w-full px-7 py-3 bg-blue-600 text-white font-medium text-lg uppercase rounded shadow-md hover:bg-blue-800 transition duration-200 ease-in-out"
+            >
+              Sign up
+            </button>
+
+            <div className="grid grid-rows-2 whitespace-nowrap text-sm sm:text-lg  text-white">
+              <p className="mb-2 ">
                 Have a account?
                 <Link
                   to="/signIn"
@@ -122,21 +129,15 @@ const SignUp = () => {
                 </Link>
               </p>
               <p>
+                Forgot password?
                 <Link
                   to="/forgotPassword"
-                  className="text-blue-300 hover:text-blue-500 transition duration-200 ease-in-out"
+                  className="text-blue-300 hover:text-blue-500 transition duration-200 ease-in-out ml-1"
                 >
-                  Forgot password?
+                  Reset password
                 </Link>
               </p>
             </div>
-
-            <button
-              type="submit"
-              className="mt-3 mb-6 w-full px-7 py-3 bg-blue-600 text-white font-medium text-lg uppercase rounded shadow-md hover:bg-blue-800 transition duration-200 ease-in-out"
-            >
-              Sign up
-            </button>
 
             {/* Register with google */}
             {/* Register with Facebook */}

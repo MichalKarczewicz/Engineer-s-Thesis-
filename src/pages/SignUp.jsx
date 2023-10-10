@@ -62,11 +62,13 @@ const SignUp = () => {
 
   return (
     <section>
-      <h1 className="text-3xl text-center mt-6 font-bold">Register</h1>
       <div className="flex justify-center items-center py-12 max-w-6xl mx-auto">
-        <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20 bg-gray-900 px-12 py-12 rounded-tr-3xl  rounded-bl-3xl rounded-tl-xl rounded-br-3xl">
+        <div className="w-full md:w-[70%] lg:w-[40%] lg:ml-20 bg-gray-900  px-12 py-6 rounded-tr-3xl  rounded-bl-3xl rounded-tl-xl rounded-br-3xl">
+          <p className="text-3xl font-bold w-full text-center text-white">
+            Sign Up
+          </p>
           <form onSubmit={onSubmit}>
-            <div className="relative mt-3">
+            <div className="relative mt-6">
               <BsFillPersonFill className="absolute top-[13px] right-3 text-xl" />
               <input
                 type="text"

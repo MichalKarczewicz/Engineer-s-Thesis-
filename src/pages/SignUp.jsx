@@ -10,6 +10,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
@@ -53,8 +54,9 @@ const SignUp = () => {
       formDataWithoutPassword.timestamp = serverTimestamp();
 
       await setDoc(doc(db, "users", user.uid), formDataWithoutPassword);
+      toast.success("Registered successfully!");
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong!");
     }
   }
 

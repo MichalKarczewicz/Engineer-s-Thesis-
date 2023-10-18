@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ForgotPassword from "./pages/ForgotPassword";
+import AuthenticatedPage from "./components/AuthenticatedPage";
 
 function App() {
   return (
@@ -15,7 +16,10 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<AuthenticatedPage />}>
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/forgotPassword" element={<ForgotPassword />} />

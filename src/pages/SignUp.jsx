@@ -42,9 +42,11 @@ const SignUp = () => {
         email,
         password
       );
+
       updateProfile(auth.currentUser, {
         displayName: name,
       });
+
       const user = userData.user;
 
       const formDataWithoutPassword = {

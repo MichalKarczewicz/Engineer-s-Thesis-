@@ -1,13 +1,31 @@
-import React from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 const Header = () => {
+  const [pageState, setPageState] = useState("SignIn");
   const navigate = useNavigate();
   const location = useLocation();
+  const auth = getAuth();
 
   const checkCurrentPathname = (route) => {
     if (route === location.pathname) return true;
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setPageState("Profile");
+      } else {
+        setPageState("SignIn");
+      }
+    });
+  }, [auth]);
+
+  function onLogout() {
+    auth.signOut();
+    navigate("/");
+  }
 
   return (
     <div className="bg-gray-900 border-b border-b-gray-700 shadow-lg sticky top-0 z-40 text-white">
@@ -54,11 +72,16 @@ const Header = () => {
                 "border-b-orange-300 duration-300 ease-in-out"
               }`}
               onClick={() => {
-                navigate("/profile");
+                navigate(`/${pageState}`);
               }}
             >
-              Profile
+              {pageState === "Profile" ? pageState : "Sing In"}
             </li>
+            {pageState === "Profile" ? (
+              <li className={`py-3 font-semibold border-b-4 cursor-pointer`}>
+                <button onClick={onLogout}>Logout</button>
+              </li>
+            ) : null}
           </ul>
         </div>
       </header>

@@ -28,7 +28,7 @@ const Header = () => {
   }
 
   return (
-    <div className="bg-gray-900 border-b border-b-gray-700 shadow-lg sticky top-0 z-40 text-white">
+    <div className="bg-gray-900 border-b border-b-gray-300 shadow-lg sticky top-0 z-40 text-white">
       <header className="flex justify-between items-center px-3 max-w-[100rem] mx-auto">
         <div>
           <div>
@@ -47,7 +47,7 @@ const Header = () => {
             <li
               className={`py-3 font-semibold border-b-4 cursor-pointer ${
                 checkCurrentPathname("/") &&
-                "border-b-orange-300 transition duration-300 ease-in-out"
+                "border-b-red-700 text-red-700 transition duration-300 ease-in-out"
               }`}
               onClick={() => {
                 navigate("/");
@@ -58,7 +58,7 @@ const Header = () => {
             <li
               className={`py-3 font-semibold border-b-4 cursor-pointer  ${
                 checkCurrentPathname("/people") &&
-                "border-b-orange-300 duration-300 ease-in-out"
+                "border-b-red-700 text-red-700  duration-300 ease-in-out"
               }`}
               onClick={() => {
                 navigate("/people");
@@ -69,16 +69,16 @@ const Header = () => {
             <li
               className={`py-3 font-semibold border-b-4 cursor-pointer ${
                 checkCurrentPathname("/profile") &&
-                "border-b-orange-300 duration-300 ease-in-out"
+                "border-b-red-700 text-red-700  duration-300 ease-in-out"
               }`}
               onClick={() => {
-                navigate(`/${pageState}`);
+                navigate(`/profile`);
               }}
             >
-              {pageState === "Profile" ? pageState : "Sing In"}
+              {pageState === "Profile" ? pageState : "Sign In"}
             </li>
             {pageState === "Profile" ? (
-              <li className={`py-3 font-semibold border-b-4 cursor-pointer`}>
+              <li className={`py-3 font-semibold  border-b-4 cursor-pointer`}>
                 <button onClick={onLogout}>Logout</button>
               </li>
             ) : null}

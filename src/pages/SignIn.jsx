@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlineMail, AiFillUnlock } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ const SignIn = () => {
   });
 
   const { email, password } = formData;
+  const navigate = useNavigate();
 
   const showPassword = () => {
     setPasswordVisibility(!passwordVisibility);
@@ -32,6 +33,7 @@ const SignIn = () => {
       const auth = getAuth();
       await signInWithEmailAndPassword(auth, email, password);
       toast.info("Login");
+      navigate("/");
     } catch (error) {
       toast.error("Bad user credentials");
     }

@@ -1,16 +1,13 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router";
 import useUserAuthStatus from "./../hooks/useUserAuthStatus";
+import { toast } from "react-toastify";
 
 const AuthenticatedPage = () => {
   const { userLoggedIn, checkUserStatus } = useUserAuthStatus();
 
   if (checkUserStatus) {
-    return (
-      <>
-        <h2>Loading...</h2>
-      </>
-    );
+    return <></>;
   }
 
   return userLoggedIn ? <Outlet /> : <Navigate to="/signIn" />;

@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ForgotPassword from "./pages/ForgotPassword";
 import AuthenticatedPage from "./components/AuthenticatedPage";
+import CreateWorkout from "./pages/CreateWorkout";
 
 function App() {
   return (
@@ -19,7 +20,9 @@ function App() {
           <Route path="/profile" element={<AuthenticatedPage />}>
             <Route path="/profile" element={<Profile />} />
           </Route>
-
+          <Route path="/create-workout" element={<AuthenticatedPage />}>
+            <Route path="/create-workout" element={<CreateWorkout />} />
+          </Route>
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/forgotPassword" element={<ForgotPassword />} />

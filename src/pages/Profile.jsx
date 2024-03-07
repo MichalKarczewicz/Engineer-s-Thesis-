@@ -1,6 +1,18 @@
-import { getAuth } from "firebase/auth";
+import { getAuth, updateProfile } from "firebase/auth";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { db } from "../firebase";
+import { toast } from "react-toastify";
 
 const Profile = () => {
   const auth = getAuth();
@@ -22,6 +34,25 @@ const Profile = () => {
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  }
+
+  async function onSubmit() {
+    try {
+      if (auth.currentUser.displayName !== name) {
+        //update display name in firebase
+        await updateProfile(auth.currentUser, {
+          displayName: name,
+        });
+        // update name in the firestore
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        await updateDoc(docRef, {
+          displayName: name,
+        });
+      }
+      toast.success("Profile details updated");
+    } catch (error) {
+      toast.error("Could not update the profile details");
+    }
   }
 
   function changeProfileImage(e) {}
@@ -84,55 +115,6 @@ const Profile = () => {
                 disabled={!changeDetails}
                 onChange={onChange}
               />
-              {/* age */}
-              <input
-                type="number"
-                min={13}
-                max={100}
-                id="age"
-                value={age}
-                className="mb-3 w-[50%] px-4 py-2 text-xl text-black bg-white border border-gray-800 rounded transition ease-in-out"
-                disabled={!changeDetails}
-                onChange={onChange}
-                placeholder={age === undefined ? "age" : age}
-              />
-              {/* Height */}
-              <input
-                type="number"
-                id="height"
-                value={height}
-                className="mb-3 w-[50%] px-4 py-2 text-xl text-black bg-white border border-gray-800 rounded transition ease-in-out"
-                disabled={!changeDetails}
-                onChange={onChange}
-                min={90}
-                max={280}
-                placeholder={height === undefined ? "height" : height}
-              />
-              {/* Weight */}
-              <input
-                type="number"
-                id="weight"
-                value={weight}
-                className="mb-3 w-[50%] px-4 py-2 text-xl text-black bg-white border border-gray-800 rounded transition ease-in-out"
-                disabled={!changeDetails}
-                onChange={onChange}
-                min={40}
-                max={300}
-                placeholder={weight === undefined ? "weight" : weight}
-              />
-              <input
-                type="number"
-                id="workoutExperience"
-                value={workoutExperience}
-                className="mb-3 w-[50%] px-4 py-2 text-xl text-black bg-white border border-gray-800 rounded transition ease-in-out"
-                disabled={!changeDetails}
-                onChange={onChange}
-                placeholder={
-                  workoutExperience === undefined
-                    ? "workout experience"
-                    : workoutExperience
-                }
-              />
             </div>
 
             <div className="flex justify-center mt-2 items-center">
@@ -143,6 +125,7 @@ const Profile = () => {
                 className="text-red-600 hover:text-red-700 transition ease-in-out 
               duration-200 ml-1 cursor-pointer"
                 onClick={() => {
+                  changeDetails && onSubmit();
                   setChangeDetails((prevState) => !prevState);
                 }}
               >

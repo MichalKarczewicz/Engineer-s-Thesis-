@@ -1,6 +1,6 @@
 import { getAuth, updateProfile } from "firebase/auth";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import {
   collection,
   deleteDoc,
@@ -10,20 +10,59 @@ import {
   query,
   updateDoc,
   where,
+  addDoc,
+  serverTimestamp,
+  getDoc,
+  setDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { toast } from "react-toastify";
+import Workoutplan from "./Workoutplan";
+import PlanItem from "./PlanItem";
+import PlanItems from "./PlanItems";
 
 const Profile = () => {
   const auth = getAuth();
+  const [workoutplans, setWorkoutPlans] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
-    age: auth.currentUser.age,
-    height: auth.currentUser.height,
-    weight: auth.currentUser.weight,
-    workoutExperience: auth.currentUser.workoutExperience,
+    age: "",
+    height: "",
+    weight: "",
+    workoutExperience: "",
   });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const usersRef = doc(db, "users", auth.currentUser.uid);
+        const usersInfoRef = doc(db, "usersInfo", auth.currentUser.uid);
+
+        const usersInfoSnapshot = await getDoc(usersInfoRef);
+
+        if (usersInfoSnapshot.exists()) {
+          const userInfoData = usersInfoSnapshot.data();
+          setFormData((prevData) => ({
+            ...prevData,
+            age: userInfoData.age || "",
+            height: userInfoData.height || "",
+            weight: userInfoData.weight || "",
+            workoutExperience: userInfoData.workoutExperience || "",
+          }));
+        } else {
+          console.log("UserInfo document does not exist");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [auth.currentUser]);
+
   const [changeDetails, setChangeDetails] = useState(false);
   const [changeImage, setChangeImage] = useState(false);
 
@@ -36,21 +75,114 @@ const Profile = () => {
     }));
   }
 
-  async function onSubmit() {
+  useEffect(() => {
+    async function fetchUserPlans() {
+      const planRef = collection(db, "workoutplans");
+      const q = query(
+        planRef,
+        where("userRef", "==", auth.currentUser.uid),
+        orderBy("timestamp", "desc")
+      );
+
+      const querySnap = await getDocs(q);
+      let plans = [];
+      querySnap.forEach((doc) => {
+        return plans.push({
+          id: doc.id,
+          data: doc.data(),
+          completed: doc.data.completed || false,
+        });
+      });
+      setWorkoutPlans(plans);
+      setLoading(false);
+    }
+    fetchUserPlans();
+  }, [auth.currentUser.uid]);
+
+  async function onDelete(workoutplan) {
+    if (window.confirm("Are you sure you want to delete?")) {
+      await deleteDoc(doc(db, "workoutplans", workoutplan));
+      const updatedListings = workoutplans.filter(
+        (workoutplans) => workoutplan.id !== workoutplan
+      );
+      setWorkoutPlans(updatedListings);
+      toast.success("Successfully deleted");
+    }
+  }
+
+  async function markAsCompleted(planId) {
     try {
-      if (auth.currentUser.displayName !== name) {
-        //update display name in firebase
-        await updateProfile(auth.currentUser, {
-          displayName: name,
+      const docRef = doc(db, "workoutplans", planId);
+      const planData = {
+        completed: true,
+      };
+      await updateDoc(docRef, planData);
+      console.log("Plan marked as completed successfully");
+      updatePlanState(planId, true); // Aktualizujemy stan planu w stanie komponentu
+    } catch (error) {
+      console.error("Error marking plan as completed:", error);
+    }
+  }
+
+  async function markAsNotCompleted(planId) {
+    try {
+      const docRef = doc(db, "workoutplans", planId);
+      const planData = {
+        completed: false,
+      };
+      await updateDoc(docRef, planData);
+      console.log("Plan marked as not completed successfully");
+      updatePlanState(planId, false); // Aktualizujemy stan planu w stanie komponentu
+    } catch (error) {
+      console.error("Error marking plan as not completed:", error);
+    }
+  }
+
+  async function updatePlanState(planId, completed) {
+    setWorkoutPlans((prevPlans) =>
+      prevPlans.map((plan) =>
+        plan.id === planId ? { ...plan, completed: completed } : plan
+      )
+    );
+  }
+
+  async function onSubmit() {
+    const { name, email, age, height, weight, workoutExperience } = formData;
+
+    try {
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+        email: email,
+      });
+
+      const userInfoRef = doc(db, "usersInfo", auth.currentUser.uid);
+      const userInfoSnapshot = await getDoc(userInfoRef);
+      const userInfoData = {
+        age: age,
+        height: height,
+        weight: weight,
+        workoutExperience: workoutExperience,
+      };
+
+      if (userInfoSnapshot.exists()) {
+        // If userInfo document exists, update only the fields that the user wants to change
+        const userInfoFieldsToUpdate = {};
+        Object.keys(userInfoData).forEach((key) => {
+          if (userInfoData[key]) {
+            userInfoFieldsToUpdate[key] = userInfoData[key];
+          }
         });
-        // update name in the firestore
-        const docRef = doc(db, "users", auth.currentUser.uid);
-        await updateDoc(docRef, {
-          displayName: name,
-        });
+
+        await updateDoc(userInfoRef, userInfoFieldsToUpdate);
+      } else {
+        // If userInfo document does not exist, create a new one with the provided data
+        await setDoc(userInfoRef, userInfoData);
       }
+
+      console.log("Profile details updated");
       toast.success("Profile details updated");
     } catch (error) {
+      console.error("Error updating profile:", error);
       toast.error("Could not update the profile details");
     }
   }
@@ -59,8 +191,8 @@ const Profile = () => {
 
   return (
     <>
-      <section className=" flex flex-col justify-center items-center px-6 py-12 max-w-6xl mx-auto">
-        <h1 className=" text-3xl text-center mt-6 font-serif">My profile</h1>
+      <section className="flex flex-col justify-center items-center px-6 py-12 max-w-6xl mx-auto">
+        <h1 className="text-3xl text-center mt-6 font-serif">My profile</h1>
         <div className="w-full mt-6 px-3">
           <form>
             {/* User avatar */}
@@ -105,6 +237,7 @@ const Profile = () => {
                 className="mb-3 w-[50%] px-4 py-2 text-xl text-black bg-white border border-gray-800 rounded transition ease-in-out"
                 disabled={!changeDetails}
                 onChange={onChange}
+                placeholder="Name"
               />
               {/*  e-mail */}
               <input
@@ -114,6 +247,53 @@ const Profile = () => {
                 className="mb-3 w-[50%] px-4 py-2 text-xl text-black bg-white border border-gray-800 rounded transition ease-in-out"
                 disabled={!changeDetails}
                 onChange={onChange}
+                placeholder="Email"
+              />
+
+              {/* age */}
+              <input
+                type="number"
+                min={13}
+                max={100}
+                id="age"
+                value={age}
+                className="mb-3 w-[50%] px-4 py-2 text-xl text-black bg-white border border-gray-800 rounded transition ease-in-out"
+                disabled={!changeDetails}
+                onChange={onChange}
+                placeholder="Age"
+              />
+              {/* Height */}
+              <input
+                type="number"
+                id="height"
+                value={height}
+                className="mb-3 w-[50%] px-4 py-2 text-xl text-black bg-white border border-gray-800 rounded transition ease-in-out"
+                disabled={!changeDetails}
+                onChange={onChange}
+                min={90}
+                max={280}
+                placeholder="Height"
+              />
+              {/* Weight */}
+              <input
+                type="number"
+                id="weight"
+                value={weight}
+                className="mb-3 w-[50%] px-4 py-2 text-xl text-black bg-white border border-gray-800 rounded transition ease-in-out"
+                disabled={!changeDetails}
+                onChange={onChange}
+                min={40}
+                max={300}
+                placeholder="Weight"
+              />
+              <input
+                type="number"
+                id="workoutExperience"
+                value={workoutExperience}
+                className="mb-3 w-[50%] px-4 py-2 text-xl text-black bg-white border border-gray-800 rounded transition ease-in-out"
+                disabled={!changeDetails}
+                onChange={onChange}
+                placeholder="Workout Experience"
               />
             </div>
 
@@ -136,7 +316,7 @@ const Profile = () => {
         </div>
         <button
           type="submit"
-          className=" w-[50%]  mt-4  h-[60px] uppercase font-semibold  bg-slate-700 border-spacing-3 rounded-md text-white px-4 py-2 border-2 border-slate-800"
+          className="w-[50%] mt-4 h-[60px] uppercase font-semibold bg-slate-700 border-spacing-3 rounded-md text-white px-4 py-2 border-2 border-slate-800"
         >
           <Link
             to="/create-workout"
@@ -146,6 +326,29 @@ const Profile = () => {
           </Link>
         </button>
       </section>
+
+      <div className="max-w-7xl px-3 mt-6 mx-auto">
+        {!loading && workoutplans.length > 0 && (
+          <>
+            <h2 className="text-2xl text-center font-semibold">
+              My workout plans
+            </h2>
+            <ul className="sm:grid sm:gri-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 mt-6 mb-6 border-2">
+              {workoutplans.map((plan) => (
+                <PlanItems
+                  key={plan.id}
+                  plan={plan.data}
+                  id={plan.id}
+                  onDelete={() => onDelete(plan.id)}
+                  markAsCompleted={() => markAsCompleted(plan.id)}
+                  markAsNotCompleted={() => markAsNotCompleted(plan.id)}
+                  completed={plan.completed}
+                />
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
     </>
   );
 };

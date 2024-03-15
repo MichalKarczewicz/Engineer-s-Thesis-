@@ -47,6 +47,10 @@ const CreateWorkout = () => {
 
   const {
     level,
+    calisthenic,
+    topExercise,
+    secondExercise,
+    thirdExercise,
     goal,
     category,
     body,
@@ -241,12 +245,8 @@ const CreateWorkout = () => {
     const {
       level,
       category,
-      goal,
       body,
       problemAreas,
-      age,
-      height,
-      workoutExperience,
       calisthenic,
       topExercise,
       secondExercise,
@@ -287,6 +287,7 @@ const CreateWorkout = () => {
     const docRef = await addDoc(collection(db, "workoutplans"), formDataCopy);
 
     toast.success("Workout created");
+    navigate(`/${docRef.id}`);
   }
 
   function onChange(e) {
@@ -312,7 +313,8 @@ const CreateWorkout = () => {
             value="beginner"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg 
+                    ${level === "beginner" ? "bg-gray-300" : ""} 
                     transition duration-150 ease-in-out w-full`}
           >
             Beginner
@@ -324,7 +326,8 @@ const CreateWorkout = () => {
             value="intermediate"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg 
+                    ${level === "intermediate" ? "bg-gray-300" : ""}
                     transition duration-150 ease-in-out w-full`}
           >
             intermediate
@@ -337,7 +340,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${level === "expert" ? "bg-gray-300" : ""}`}
           >
             expert
           </button>
@@ -353,7 +357,8 @@ const CreateWorkout = () => {
             value="cardio"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg 
+                    ${category === "cardio" ? "bg-gray-300" : ""}
                     transition duration-150 ease-in-out w-full`}
           >
             Lose Weight
@@ -365,7 +370,8 @@ const CreateWorkout = () => {
             value="powerlifting"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg 
+                    ${category === "powerlifting" ? "bg-gray-300" : ""}
                     transition duration-150 ease-in-out w-full`}
           >
             Gain Muscle Mass
@@ -377,7 +383,8 @@ const CreateWorkout = () => {
             value="strength"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg
+                    ${category === "strength" ? "bg-gray-300" : ""} 
                     transition duration-150 ease-in-out w-full`}
           >
             Get Shredded
@@ -394,7 +401,8 @@ const CreateWorkout = () => {
             value="cardio"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg
+                    ${body === "cardio" ? "bg-gray-300" : ""} 
                     transition duration-150 ease-in-out w-full`}
           >
             Athlete
@@ -406,7 +414,8 @@ const CreateWorkout = () => {
             value="powerlifting"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg
+                    ${body === "powerlifting" ? "bg-gray-300" : ""}
                     transition duration-150 ease-in-out w-full`}
           >
             Bodybuilder
@@ -423,7 +432,8 @@ const CreateWorkout = () => {
             value="chest"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg
+                    ${problemAreas === "chest" ? "bg-gray-300" : ""}
                     transition duration-150 ease-in-out w-full`}
           >
             Weak chest
@@ -435,7 +445,8 @@ const CreateWorkout = () => {
             value="biceps"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg
+                    ${problemAreas === "biceps" ? "bg-gray-300" : ""} 
                     transition duration-150 ease-in-out w-full`}
           >
             Slim arms
@@ -447,7 +458,8 @@ const CreateWorkout = () => {
             value="abdominals"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg
+                    ${problemAreas === "abdominals" ? "bg-gray-300" : ""}  
                     transition duration-150 ease-in-out w-full`}
           >
             Beer belly
@@ -459,7 +471,8 @@ const CreateWorkout = () => {
             value="glutes"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
-                    shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
+                    shadow-md rounded hover:shadow-lg focus:shadow-lg
+                    ${problemAreas === "glutes" ? "bg-gray-300" : ""}  
                     transition duration-150 ease-in-out w-full`}
           >
             Slim Legs
@@ -539,7 +552,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${calisthenic === "pull" ? "bg-gray-300" : ""}  `}
           >
             Pull ups
           </button>
@@ -551,7 +565,9 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full\
+                    ${calisthenic === "push" ? "bg-gray-300" : ""}
+                    `}
           >
             Push ups
           </button>
@@ -563,7 +579,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${calisthenic === "glutes" ? "bg-gray-300" : ""}`}
           >
             Pistol squat
           </button>
@@ -580,7 +597,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${topExercise === "bench press" ? "bg-gray-300" : ""}`}
           >
             Bench press
           </button>
@@ -592,7 +610,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${topExercise === "deadlift" ? "bg-gray-300" : ""}`}
           >
             Deadlift
           </button>
@@ -604,7 +623,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${topExercise === "squat" ? "bg-gray-300" : ""}`}
           >
             Squats
           </button>
@@ -621,7 +641,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-ful
+                    ${secondExercise === "ohp" ? "bg-gray-300" : ""}`}
           >
             OHP
           </button>
@@ -633,7 +654,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${secondExercise === "barbell row" ? "bg-gray-300" : ""}`}
           >
             Barbell Row
           </button>
@@ -645,7 +667,9 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${secondExercise === "calf raises" ? "bg-gray-300" : ""}
+                    `}
           >
             Calf Raises
           </button>
@@ -662,7 +686,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${thirdExercise === "burpees" ? "bg-gray-300" : ""}`}
           >
             Burpees
           </button>
@@ -674,7 +699,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${thirdExercise === "plank" ? "bg-gray-300" : ""}`}
           >
             planks
           </button>
@@ -686,7 +712,8 @@ const CreateWorkout = () => {
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase 
                     shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg 
-                    transition duration-150 ease-in-out w-full`}
+                    transition duration-150 ease-in-out w-full
+                    ${thirdExercise === "glutes" ? "bg-gray-300" : ""}`}
           >
             Glute bridge
           </button>

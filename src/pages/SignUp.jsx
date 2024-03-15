@@ -58,6 +58,7 @@ const SignUp = () => {
       await setDoc(doc(db, "users", user.uid), formDataWithoutPassword);
       toast.success("Registered successfully!");
     } catch (error) {
+      console.log(error);
       toast.error("Something went wrong!");
     }
   }

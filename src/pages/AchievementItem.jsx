@@ -2,7 +2,10 @@ import React from "react";
 import { CgGym } from "react-icons/cg";
 import { MdSportsGymnastics } from "react-icons/md";
 
-const AchievementItem = ({ achievement }) => {
+const AchievementItem = ({ achievement, color }) => {
+  let bgColor = color;
+  toString(bgColor);
+
   return (
     <div>
       <div
@@ -13,15 +16,16 @@ const AchievementItem = ({ achievement }) => {
             {achievement.name}
           </p>
           <div
-            className={`mx-auto my-auto py-2 px-2 w-[50px] h-[50px] rounded-full ${achievement.color}`}
+            className={`mx-auto my-auto py-2 px-2 w-[50px] h-[50px] rounded-full ${bgColor}`}
           >
+            {console.log(bgColor)}
             {achievement.description.includes("created") ? (
               <CgGym className="text-4xl" />
             ) : (
               <MdSportsGymnastics className="text-4xl" />
             )}
           </div>
-          <p className="text-md font-bold mb-4 text-center my-4">
+          <p className="text-md font-bold mb-4 text-center my-4 bg-ye">
             {achievement.description}
           </p>
         </div>

@@ -430,15 +430,14 @@ const Profile = () => {
         )}
       </div>
       <div className="max-w-7xl px-3 mt-6 mx-auto">
-        {console.log(achievement)}
         <h2 className="text-2xl text-center font-semibold">My Achievements</h2>
-        {console.log(achievement)}
         <ul className="sm:grid sm:gri-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 mt-6 mb-6 border-1">
           {achievement.map((achievementItem, index) => (
             <AchievementItem
               key={index}
               achievement={achievementItem}
               rewardPlans={rewardPlans}
+              color={achievementItem.color}
             />
           ))}
         </ul>

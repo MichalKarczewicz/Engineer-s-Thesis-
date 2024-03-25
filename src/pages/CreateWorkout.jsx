@@ -17,7 +17,6 @@ const CreateWorkout = () => {
   const auth = getAuth();
   const navigate = useNavigate();
   const [exercises, setExercises] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
   const fetchData = async () => {
     try {
       const response = await fetch("./exercises.json");

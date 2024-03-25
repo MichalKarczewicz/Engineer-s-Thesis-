@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import homePage from "../assets/homePageImage.jpg";
 import { RiSearchLine, RiCloseCircleLine } from "react-icons/ri";
+import WorkoutPlan from "./WorkoutPlan";
 
 const Home = () => {
   const [exercises, setExercises] = useState([]);

@@ -5,7 +5,7 @@ import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
 import Exercises from "./Exercises";
 
-const Workoutplan = () => {
+const WorkoutPlan = () => {
   const params = useParams();
   const auth = getAuth();
   const [workouts, setWorkouts] = useState(null);
@@ -13,7 +13,7 @@ const Workoutplan = () => {
 
   useEffect(() => {
     async function fetchWorkouts() {
-      const docRef = doc(db, "workoutplans", params.workoutplanID);
+      const docRef = doc(db, "workoutplans", params.workoutPlanID);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setWorkouts(docSnap.data());
@@ -21,7 +21,7 @@ const Workoutplan = () => {
       }
     }
     fetchWorkouts();
-  }, [params.workoutplanID]);
+  }, [params.workoutPlanID]);
 
   if (loading) {
     return (
@@ -38,7 +38,7 @@ const Workoutplan = () => {
   return (
     <main className="w-full">
       <h1 className=" text-3xl text-center mt-6 font-serif">Workout plan</h1>
-      <div className="w-full">
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
         {exerciseArray.map((exercises, idx) => (
           <Exercises exercises={exercises} key={idx} />
         ))}
@@ -47,4 +47,4 @@ const Workoutplan = () => {
   );
 };
 
-export default Workoutplan;
+export default WorkoutPlan;

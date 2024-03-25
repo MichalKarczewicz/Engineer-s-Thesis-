@@ -17,14 +17,19 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { toast } from "react-toastify";
-import Workoutplan from "./Workoutplan";
+import Workoutplan from "./WorkoutPlan";
 import PlanItem from "./PlanItem";
+import { CgGym } from "react-icons/cg";
 import PlanItems from "./PlanItems";
+import AchievementItem from "./AchievementItem";
 
 const Profile = () => {
   const auth = getAuth();
   const [workoutplans, setWorkoutPlans] = useState(null);
+  const [rewardPlans, setRewardPlans] = useState(null);
+  const [completedPlans, setCompletedPlans] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [achievement, setAchievement] = useState([]);
 
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
@@ -34,6 +39,8 @@ const Profile = () => {
     weight: "",
     workoutExperience: "",
   });
+
+  // Reszta kodu komponentu Profile
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -52,6 +59,70 @@ const Profile = () => {
             weight: userInfoData.weight || "",
             workoutExperience: userInfoData.workoutExperience || "",
           }));
+
+          // Sprawdź czy dokument zawiera pola workoutPlansCount i workoutPlansCompletedCount
+          if (
+            !userInfoData.hasOwnProperty("workoutPlansCount") ||
+            !userInfoData.hasOwnProperty("workoutPlansCompletedCount")
+          ) {
+            console.log("Missing fields in usersInfo document. Updating...");
+            const defaultValues = {
+              workoutPlansCount: userInfoData.workoutPlansCount || 0,
+              workoutPlansCompletedCount:
+                userInfoData.workoutPlansCompletedCount || 0,
+            };
+            await setDoc(usersInfoRef, defaultValues, { merge: true });
+          }
+
+          // Sprawdź liczbę planów treningowych użytkownika
+          const workoutPlansCount = userInfoData.workoutPlansCount || 0;
+          // Sprawdź liczbę ukonczonych planów treningowych użytkownika
+          const workoutPlansCompletedCount =
+            userInfoData.workoutPlansCompletedCount || 0;
+
+          // Pobierz odpowiednią nagrodę na podstawie liczby planów treningowych
+          let reward = "BronzeAwardPlansCreated";
+          if (workoutPlansCount >= 3 && workoutPlansCount <= 6) {
+            reward = "SilverAwardPlansCreated"; // Możesz dodać kolejne warunki dla innych nagród
+          }
+          if (workoutPlansCount > 6) {
+            reward = "GoldAwardPlansCreated";
+          }
+          setRewardPlans(reward);
+
+          // Pobierz odpowiednią nagrodę na podstawie liczby planów treningowych
+          let rewardCompletedPlans = "BronzeCompletedPlans";
+          if (
+            workoutPlansCompletedCount >= 3 &&
+            workoutPlansCompletedCount <= 6
+          ) {
+            rewardCompletedPlans = "SilverCompletedPlans"; // Możesz dodać kolejne warunki dla innych nagród
+          }
+          if (workoutPlansCompletedCount > 6) {
+            rewardCompletedPlans = "GoldCompletedPlans";
+          }
+          setCompletedPlans(rewardCompletedPlans);
+
+          // Pobierz nagrodę z kolekcji achievements
+          const achievementsRef = doc(db, "achievements", reward);
+          const achievementsSnapshot = await getDoc(achievementsRef);
+          const achievementsData = achievementsSnapshot.exists()
+            ? [achievementsSnapshot.data()]
+            : [];
+
+          // Pobierz nagrodę z kolekcji achievements
+          const achievementsPlansRef = doc(
+            db,
+            "achievements",
+            rewardCompletedPlans
+          );
+          const achievementsPlansSnapshot = await getDoc(achievementsPlansRef);
+          const achievementsPlansData = achievementsPlansSnapshot.exists()
+            ? [achievementsPlansSnapshot.data()]
+            : [];
+
+          // Ustaw nową wartość dla achievement
+          setAchievement([...achievementsData, ...achievementsPlansData]);
         } else {
           console.log("UserInfo document does not exist");
         }
@@ -117,6 +188,20 @@ const Profile = () => {
         completed: true,
       };
       await updateDoc(docRef, planData);
+      const userInfoRef = doc(db, "usersInfo", auth.currentUser.uid);
+      const userInfoSnapshot = await getDoc(userInfoRef);
+      let workoutPlansCompletedCount = 0;
+
+      if (userInfoSnapshot.exists()) {
+        // Jeśli dokument użytkownika istnieje, zaktualizuj pole workoutPlansCount
+        workoutPlansCompletedCount =
+          userInfoSnapshot.data().workoutPlansCompletedCount || 0;
+      }
+
+      const userInfoData = {
+        workoutPlansCompletedCount: workoutPlansCompletedCount + 1,
+      };
+      await updateDoc(userInfoRef, userInfoData);
       console.log("Plan marked as completed successfully");
       updatePlanState(planId, true); // Aktualizujemy stan planu w stanie komponentu
     } catch (error) {
@@ -348,6 +433,20 @@ const Profile = () => {
             </ul>
           </>
         )}
+      </div>
+      <div className="max-w-7xl px-3 mt-6 mx-auto">
+        {console.log(achievement)}
+        <h2 className="text-2xl text-center font-semibold">My Achievements</h2>
+        {console.log(achievement)}
+        <ul className="sm:grid sm:gri-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 mt-6 mb-6 border-1">
+          {achievement.map((achievementItem, index) => (
+            <AchievementItem
+              key={index}
+              achievement={achievementItem}
+              rewardPlans={rewardPlans}
+            />
+          ))}
+        </ul>
       </div>
     </>
   );

@@ -120,7 +120,7 @@ const Home = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <RiCloseCircleLine
-              className="absolute top-3 right-3 cursor-pointer text-gray-400 hover:text-red-500"
+              className="absolute top-3 right-3 cursor-pointer text-gray-400 hover:text-red-500 text-3xl"
               onClick={handleClosePopup}
             />
             <h2 className="text-2xl font-semibold mb-4 text-red-600">

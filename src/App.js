@@ -9,7 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 import ForgotPassword from "./pages/ForgotPassword";
 import AuthenticatedPage from "./components/AuthenticatedPage";
 import CreateWorkout from "./pages/CreateWorkout";
-import Workoutplan from "./pages/Workoutplan";
+import WorkoutPlan from "./pages/WorkoutPlan";
+import People from "./pages/People";
 
 function App() {
   return (
@@ -21,12 +22,15 @@ function App() {
           <Route path="/profile" element={<AuthenticatedPage />}>
             <Route path="/profile" element={<Profile />} />
           </Route>
-          <Route path="/:workoutplanID" element={<Workoutplan />} />
+          <Route path="/:workoutPlanID" element={<WorkoutPlan />} />
           <Route path="/create-workout" element={<AuthenticatedPage />}>
             <Route path="/create-workout" element={<CreateWorkout />} />
           </Route>
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signUp" element={<SignUp />} />
+          <Route path="/people" element={<AuthenticatedPage />}>
+            <Route path="/people" element={<People />} />
+          </Route>
           <Route path="/forgotPassword" element={<ForgotPassword />} />
         </Routes>
       </Router>

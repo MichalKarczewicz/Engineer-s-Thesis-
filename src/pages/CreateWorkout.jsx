@@ -6,8 +6,10 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   serverTimestamp,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "./../firebase";
 
@@ -285,6 +287,19 @@ const CreateWorkout = () => {
     };
 
     const docRef = await addDoc(collection(db, "workoutplans"), formDataCopy);
+    const userInfoRef = doc(db, "usersInfo", auth.currentUser.uid);
+    const userInfoSnapshot = await getDoc(userInfoRef);
+    let workoutPlansCount = 0;
+
+    if (userInfoSnapshot.exists()) {
+      // Jeśli dokument użytkownika istnieje, zaktualizuj pole workoutPlansCount
+      workoutPlansCount = userInfoSnapshot.data().workoutPlansCount || 0;
+    }
+
+    const userInfoData = {
+      workoutPlansCount: workoutPlansCount + 1,
+    };
+    await updateDoc(userInfoRef, userInfoData);
 
     toast.success("Workout created");
     navigate(`/${docRef.id}`);

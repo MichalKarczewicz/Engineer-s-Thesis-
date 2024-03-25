@@ -1,6 +1,6 @@
 import { getAuth, updateProfile } from "firebase/auth";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   collection,
   deleteDoc,
@@ -10,16 +10,11 @@ import {
   query,
   updateDoc,
   where,
-  addDoc,
-  serverTimestamp,
   getDoc,
   setDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { toast } from "react-toastify";
-import Workoutplan from "./WorkoutPlan";
-import PlanItem from "./PlanItem";
-import { CgGym } from "react-icons/cg";
 import PlanItems from "./PlanItems";
 import AchievementItem from "./AchievementItem";
 

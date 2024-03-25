@@ -2,12 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs, where, query } from "firebase/firestore";
-import {
-  RiThumbUpLine,
-  RiThumbUpFill,
-  RiThumbDownLine,
-  RiThumbDownFill,
-} from "react-icons/ri";
+import { RiThumbUpLine, RiThumbDownLine } from "react-icons/ri";
 
 const PeoplePlanItem = ({ plan }) => {
   const [userDisplayName, setUserDisplayName] = useState(null);

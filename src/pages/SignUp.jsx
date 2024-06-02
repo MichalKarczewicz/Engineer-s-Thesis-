@@ -59,7 +59,11 @@ const SignUp = () => {
       toast.success("Registered successfully!");
     } catch (error) {
       console.log(error);
-      toast.error("Something went wrong!");
+      if (error.code === "auth/invalid-email") {
+        toast.error("Invalid email address.");
+      } else {
+        toast.error("Something went wrong!");
+      }
     }
   }
 

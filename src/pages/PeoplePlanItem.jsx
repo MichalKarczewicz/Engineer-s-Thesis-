@@ -66,3 +66,25 @@ const PeoplePlanItem = ({ plan }) => {
 };
 
 export default PeoplePlanItem;
+
+export const fetchUserData = async (userRef) => {
+  try {
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("__name__", "==", userRef));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      let userData = null;
+      querySnapshot.forEach((doc) => {
+        userData = doc.data();
+      });
+      return userData;
+    } else {
+      console.log("No matching user found");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+  }
+};

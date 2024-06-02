@@ -745,3 +745,64 @@ const CreateWorkout = () => {
 };
 
 export default CreateWorkout;
+
+export const searchByLevel = (level) => {
+  const matchingElements = [];
+  const searchNested = (obj) => {
+    for (const key in obj) {
+      if (typeof obj[key] === "object") {
+        searchNested(obj[key]);
+      } else if (key === "level" && obj[key] === level) {
+        matchingElements.push(obj);
+      }
+    }
+  };
+  const exercises = [
+    {
+      name: "3/4 Sit-Up",
+      force: "pull",
+      level: "beginner",
+      // Pozostałe właściwości...
+    },
+    {
+      name: "90/90 Hamstring",
+      force: "push",
+      level: "beginner",
+      // Pozostałe właściwości...
+    },
+    {
+      name: "Ab Crunch Machine",
+      force: "pull",
+      level: "intermediate",
+      // Pozostałe właściwości...
+    },
+    // Pozostałe ćwiczenia...
+  ];
+  searchNested(exercises);
+  return matchingElements;
+};
+
+export const searchByCategory = (data, category) => {
+  let matchingElements = [];
+  const searchNested = (obj) => {
+    for (const key in obj) {
+      if (typeof obj[key] === "object") {
+        searchNested(obj[key]);
+      } else if (key === "category" && obj[key] === category) {
+        matchingElements.push(obj);
+      }
+    }
+  };
+  searchNested(data);
+
+  if (matchingElements.length > 200) {
+    matchingElements = matchingElements
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 200);
+  } else if (matchingElements.length < 50) {
+    data = data.sort(() => 0.5 - Math.random()).slice(0, 200);
+    return data;
+  }
+
+  return matchingElements;
+};

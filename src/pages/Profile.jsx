@@ -17,6 +17,7 @@ import { db } from "../firebase";
 import { toast } from "react-toastify";
 import PlanItems from "./PlanItems";
 import AchievementItem from "./AchievementItem";
+import profileImg from "../assets/IMG_9752.jpg";
 
 const Profile = () => {
   const auth = getAuth();
@@ -277,10 +278,10 @@ const Profile = () => {
           <form>
             {/* User avatar */}
             <div className="flex flex-col text-3xl items-center">
-              <div className="w-48 h-48 rounded-full bg-blue-500 overflow-hidden flex items-center justify-center">
+              <div className="w-48 h-48 rounded-full bg-blue-500 overflow-hidden flex items-center justify-center z-1">
                 <img
-                  className="w-full h-full object-cover rounded-full"
-                  src="https://api.ngo.pl/media/get/129879?w=800&h=533"
+                  className="w-full h-full object-cover rounded-full z-30"
+                  src={profileImg}
                   alt=""
                 />
               </div>
